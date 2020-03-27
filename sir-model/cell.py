@@ -7,79 +7,90 @@ class Cell(Agent):
     # Definitions of state variables    
     Susceptible = 1
     Infected = 2
+    Recovered = 3
     
-    def __init__(self,pos,model,init_state=0):
+    def __init__(self, pos, model, init_state=1):
         '''Create cell in given x,y position, with given initial state'''
         super().__init__(pos,model)
         self.x,self.y = pos
         self.state = init_state
-        self.timecounter = 0
-        self.inf = 0.0
-        self.infduration = 0
-        self._nextstate = None
-        self._nextinf = None
-        self._nextinfduration = None
+        self.time_counter = 0
+
+        # infection
+        self.infectivity = model.infectivity
+        self.infection_duration = model.infection_duration
+
+        # immunity
+        self.immunity_duration = model.immunity_duration
+
+        # next step
+        self.__next_step_cell__ = None;
+
+
+    def initialise_as_infected(self):
+        self.state = self.Infected
+        self.time_counter = random.randint(0, self.infection_duration)
+
+    def initialise_as_recovered(self):
+        self.state = self.Infected
+        self.time_counter = random.randint(0, self.immunity_duration)
 
     def step(self):
         '''Compute the next state of a cell'''
-        # Assume cell is unchanged, unless something happens below
-        self._nextinf = self.inf
-        self._nextinfduration = self.infduration
-        self._nextstate = self.state
-        
-        # Empty squares - potential reproduction of susceptibles
-        if self.state == 0:
-            Susneighbors = 0
-            neis = self.model.grid.get_neighbors((self.x, self.y), moore=True, include_center=False)
-            for nei in neis:
-                if nei.state == self.Susceptible:
-                    Susneighbors += 1
-            if Susneighbors > 0:
-                if random.random() < self.model.r*Susneighbors:
-                    self._nextstate = self.Susceptible
+        self.__next_step_cell__ = self
 
-        # Susceptibles - might die or get infected
-        elif self.state == self.Susceptible:
-            # Natural death
-            if random.random() < self.model.d:
-                self._nextstate = 0
-            # Infection?
-            else:
-                neis = self.model.grid.get_neighbors((self.x, self.y), moore=True, include_center=False)
-                tot_inf = 0.0
-                for nei in neis:
-                    if nei.state == self.Infected:
-                        tot_inf += nei.inf
-                infprob = 0.0
-                if tot_inf > 0:
-                    infprob = tot_inf / (tot_inf + self.model.h_inf)
-                if random.random() < infprob:
-                    self._nextstate = self.Infected
-                    # Inherit infectivity of one infecting neighbour
-                    infprobsum = 0.0
-                    rand = random.uniform(0, tot_inf)
-                    for nei in neis:
-                        if nei.state == self.Infected:
-                            infprobsum += nei.inf
-                            if rand < infprobsum:
-                                # Inherit pathogen characteristics from infecting neighbour
-                                self._nextinf = nei.inf
-                                self._nextinfduration = nei.infduration
-                                break
+        # Susceptibles
+        if self.state == self.Susceptible:
+            neighbours = self.model.grid.get_neighbors((self.x, self.y), moore=True, include_center=False)
 
-        # Infected - might die naturally or die after disease_duration
+            # Calculate total infection rating based on neighbours
+            total_infectivity = 0.0
+            for neighbour in neighbours:
+                if neighbour.state == self.Infected:
+                    total_infectivity += neighbour.infectivity
+
+
+            # Calculate the infection probability
+            infection_probability = 0.0
+            if total_infectivity > 0:
+                infection_probability = total_infectivity / (total_infectivity + self.model.h_inf)
+
+            if random.random() < infection_probability:
+                self.__next_step_cell__.state = self.Infected
+
+                # filter for infected neighbors
+                inf_neighbours = [neighbour for neighbour in neighbours if neighbour.state is self.Infected]
+
+                # inherit infection from one of them
+                inf_neighbour = random.choice(inf_neighbours)
+                self.__next_step_cell__.infectivity = inf_neighbour.infectivity
+                self.__next_step_cell__.infectivition_duration = inf_neighbour.infection_duration
+
+                # reset time counter, infection starts now
+                self.__next_step_cell__.time_counter = 0
+
+        # Infected
+        # Check if the infection duration has been passed, aka: recovering after amount of time being sick
         elif self.state == self.Infected:
-            # Natural death or death by disease
-            if random.random() < self.model.d or self.timecounter > self.infduration:
-                self._nextstate = 0
-                self._nextinf = 0.0
-                self._nextinfduration = 0
-                self.timecounter = 0
-            # Else count how long it has been ill and apply potential mutations
-            else:
-                self.timecounter += 1
+            if self.time_counter > self.infection_duration:
+                self.set_state(self.Recovered)
+
+        # Recovered
+        # Check if the infection duration has been passed, aka: recovering after amount of time being sick
+        elif self.state == self.Recovered:
+            if self.time_counter > self.immunity_duration:
+                self.set_state(self.Susceptible)
+
+    def set_state(self, state):
+        self.__next_step_cell__.state = state
+        self.__next_step_cell__.time_counter = 0 
 
     def advance(self): 
-        self.state = self._nextstate
-        self.inf = self._nextinf
-        self.infduration = self._nextinfduration
+        self = self.__next_step_cell__
+
+        # increase time counter for states that need a duration
+        if self.state is self.Infected or self.state is self.Recovered:
+            self.time_counter += 1
+
+    def __str__(self):
+        return f'Cell | infection: {self.infectivity} -> {self._next_infectivity} | infection duration: {self.infection_duration} -> {self._next_infectivition_duration} | time_counter: {self.time_counter}'

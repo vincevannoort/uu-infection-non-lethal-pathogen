@@ -1,7 +1,7 @@
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.modules import ChartModule
 from mesa.visualization.ModularVisualization import ModularServer
-from model import SIModel
+from model import SIRModel
 
 ''' Portrayal function: defines the portrayal of the cells '''
 def portrayCell(cell):
@@ -16,6 +16,8 @@ def portrayCell(cell):
         portrayal["Color"] = "grey"
     elif cell.state == cell.Infected:
         portrayal["Color"] = "red"
+    elif cell.state == cell.Recovered:
+        portrayal["Color"] = "blue"
 
     return portrayal
 
@@ -27,13 +29,17 @@ gridheight = 100
 # Make a grid to plot the population dynamics
 grid = CanvasGrid(portrayCell, gridwidth, gridheight, 5*gridwidth, 5*gridheight)
 # Make a chart for plotting the density of individuals
-chart = ChartModule([{"Label": "S", "Color": "grey"},{"Label": "I", "Color": "red"}], data_collector_name='datacollector1')
+chart = ChartModule([
+    {"Label": "S", "Color": "grey"},
+    {"Label": "I", "Color": "red"}, 
+    {"Label": "R", "Color": "blue"}], 
+    data_collector_name='datacollector1')
 # Let chart plot the mean infection time
 #chart = ChartModule([{"Label": "Mean_infduration", "Color": "Black"}], data_collector_name='datacollector2')
 
 
 ''' Launch the server that will run and display the model '''
-server = ModularServer(SIModel,
+server = ModularServer(SIRModel,
                        [grid, chart],
-                       "SI-model",
+                       "SIR-model",
                        {"width": gridwidth, "height": gridheight})
