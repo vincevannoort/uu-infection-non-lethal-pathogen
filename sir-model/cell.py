@@ -32,7 +32,7 @@ class Cell(Agent):
         self.time_counter = random.randint(0, self.infection_duration)
 
     def initialise_as_recovered(self):
-        self.state = self.Infected
+        self.state = self.Recovered
         self.time_counter = random.randint(0, self.immunity_duration)
 
     def step(self):

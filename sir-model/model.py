@@ -42,12 +42,12 @@ class SIRModel(Model):
     def __init__(self, width, height):
         # Set the model parameters
         self.infectivity = 2.0       # Infection strength per infected individual
-        self.infection_duration = 30 # Duration of infection
-        self.immunity_duration = 5  # Duration of infection
+        self.infection_duration = 10 # Duration of infection
+        self.immunity_duration = 15  # Duration of infection
         self.h_inf = 10              # Scaling of infectivity
 
-        percentage_starting_infected = 0.2
-        percentage_starting_recovered = 0.1
+        percentage_starting_infected = 0.001
+        percentage_starting_recovered = 0.01
        
         self.grid = SingleGrid(width, height, torus=True)
         self.schedule = SimultaneousActivation(self)
