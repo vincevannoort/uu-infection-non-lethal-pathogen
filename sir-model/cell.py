@@ -56,7 +56,7 @@ class Cell(Agent):
                 infection_probability = total_infectivity / (total_infectivity + self.model.h_inf)
 
             if random.random() < infection_probability:
-                self.__next_step_cell__.state = self.Infected
+                self.set_state(self.Infected)
 
                 # filter for infected neighbors
                 inf_neighbours = [neighbour for neighbour in neighbours if neighbour.state is self.Infected]
@@ -66,17 +66,12 @@ class Cell(Agent):
                 self.__next_step_cell__.infectivity = inf_neighbour.infectivity
                 self.__next_step_cell__.infectivition_duration = inf_neighbour.infection_duration
 
-                # reset time counter, infection starts now
-                self.__next_step_cell__.time_counter = 0
-
-        # Infected
-        # Check if the infection duration has been passed, aka: recovering after amount of time being sick
+        # Infected - Check if the infection duration has been passed, aka: recovering after amount of time being infected
         elif self.state == self.Infected:
             if self.time_counter > self.infection_duration:
                 self.set_state(self.Recovered)
 
-        # Recovered
-        # Check if the infection duration has been passed, aka: recovering after amount of time being sick
+        # Recovered - Check if the immunity duration has been passed, aka: losing immunity after amount of time being recoverd
         elif self.state == self.Recovered:
             if self.time_counter > self.immunity_duration:
                 self.set_state(self.Susceptible)

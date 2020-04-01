@@ -39,11 +39,11 @@ def fracR(model):
 class SIRModel(Model):
     '''Description of the model'''
     
-    def __init__(self, width, height):
+    def __init__(self, width, height, infection_duration = 10, immunity_duration = 15):
         # Set the model parameters
         self.infectivity = 2.0       # Infection strength per infected individual
-        self.infection_duration = 10 # Duration of infection
-        self.immunity_duration = 15  # Duration of infection
+        self.infection_duration = infection_duration # Duration of infection
+        self.immunity_duration = immunity_duration  # Duration of infection
         self.h_inf = 10              # Scaling of infectivity
 
         percentage_starting_infected = 0.001
@@ -68,19 +68,19 @@ class SIRModel(Model):
             self.schedule.add(cell)
 
         # Add data collector, to plot the number of individuals of different types
-        self.datacollector1 = DataCollector(model_reporters={
-            "S": fracS, 
-            "I": fracI,
-            "R": fracR
+        self.datacollector_cells = DataCollector(model_reporters={
+            "Infected": fracI,
+            "Recovered": fracR,
+            "Susceptible": fracS,
         })
 
         # Add data collector, to plot the mean infection duration
-        self.datacollector2 = DataCollector(model_reporters={"Mean_inf_duration": compute_mean_infduration})
+        self.datacollector_meaninfectionduration = DataCollector(model_reporters={"Mean_inf_duration": compute_mean_infduration})
         
         self.running = True
 
     def step(self):
-        self.datacollector1.collect(self)
-        self.datacollector2.collect(self)
+        self.datacollector_cells.collect(self)
+        self.datacollector_meaninfectionduration.collect(self)
         self.schedule.step()
     
