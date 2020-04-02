@@ -5,6 +5,7 @@ from mesa.time import SimultaneousActivation # updating scheme for synchronous u
 from mesa.time import RandomActivation # for asynchronous updating
 from mesa.space import SingleGrid # spatial grid
 from mesa.datacollection import DataCollector # Data collection, to plot mean infectivity
+import numpy as np
 
 from cell import Cell # Function that describes behaviour of single cells
 
@@ -13,7 +14,11 @@ def compute_mean_infduration(model):
     infs = [cell.infection_duration for cell in model.schedule.agents if cell.state == cell.Infected]
     if len(infs) is 0:
         return 0
-    return sum(infs)/len(infs)
+    mean_inf = sum(infs)/len(infs)
+    #model.mean_inf_duration_list.append(mean_inf)
+    #if len(model.mean_inf_duration_list)>100:
+        #print('Mean of infection duration(past 100 iterations):' + str(np.mean(model.mean_inf_duration_list[-100:])))
+    return mean_inf
 
 # Computes the fraction of cells filled with an S individual
 def fracS(model):
@@ -49,6 +54,7 @@ class SIRModel(Model):
         #mutations
         self.mutation_probability = mutation_probability 
         self.mutation_strength = mutation_strength
+        #self.mean_inf_duration_list = []
 
         percentage_starting_infected = 0.001
         percentage_starting_recovered = 0.01

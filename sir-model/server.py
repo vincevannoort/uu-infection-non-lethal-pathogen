@@ -23,8 +23,8 @@ def portrayCell(cell):
 
 
 ''' Construct the simulation grid, all cells displayed as 5x5 squares '''
-gridwidth = 120 # Change these parameters to change the grid size
-gridheight = 120
+gridwidth = 150 # Change these parameters to change the grid size
+gridheight = 150
 
 # Make a grid to plot the population dynamics
 grid = CanvasGrid(portrayCell, gridwidth, gridheight, 5*gridwidth, 5*gridheight)
@@ -42,4 +42,4 @@ chart2 = ChartModule([{"Label": "Mean_inf_duration", "Color": "Black"}], data_co
 server = ModularServer(SIRModel,
                        [grid, chart1, chart2],
                        "SIR-model",
-                       {"width": gridwidth, "height": gridheight, "infectivity": 2.0, "infection_duration": 5, "immunity_duration": 5, "mutation_probability": 0.1, "mutation_strength": 1})
+                       {"width": gridwidth, "height": gridheight, "infectivity": 2, "infection_duration": 5, "immunity_duration": 15, "mutation_probability": 0.1, "mutation_strength": 3})
