@@ -64,7 +64,7 @@ class Cell(Agent):
                 # inherit infection from one of them
                 inf_neighbour = random.choice(inf_neighbours)
                 self.__next_step_cell__.infectivity = inf_neighbour.infectivity
-                self.__next_step_cell__.infectivition_duration = inf_neighbour.infection_duration
+                self.__next_step_cell__.infection_duration = inf_neighbour.infection_duration
 
         # Infected - Check if the infection duration has been passed, aka: recovering after amount of time being infected
         elif self.state == self.Infected:
@@ -73,7 +73,7 @@ class Cell(Agent):
                 
             # Mutations
             if random.random() < self.model.mutation_probability:
-                self.infection_duration = self.infection_duration + random.uniform(-self.model.mutation_strength, self.model.mutation_strength)
+                self.__next_step_cell__.infection_duration = self.infection_duration + random.uniform(-self.model.mutation_strength, self.model.mutation_strength)
 
         # Recovered - Check if the immunity duration has been passed, aka: losing immunity after amount of time being recoverd
         elif self.state == self.Recovered:
