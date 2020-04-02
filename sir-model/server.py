@@ -23,23 +23,23 @@ def portrayCell(cell):
 
 
 ''' Construct the simulation grid, all cells displayed as 5x5 squares '''
-gridwidth = 100 # Change these parameters to change the grid size
-gridheight = 100
+gridwidth = 120 # Change these parameters to change the grid size
+gridheight = 120
 
 # Make a grid to plot the population dynamics
 grid = CanvasGrid(portrayCell, gridwidth, gridheight, 5*gridwidth, 5*gridheight)
 # Make a chart for plotting the density of individuals
-chart = ChartModule([
+chart1 = ChartModule([
     {"Label": "Infected", "Color": "red"}, 
-    {"Label": "Recovered", "Color": "blue"}], 
-    {"Label": "Susceptible", "Color": "grey"},
+    {"Label": "Recovered", "Color": "blue"}, 
+    {"Label": "Susceptible", "Color": "grey"}],
     data_collector_name='datacollector_cells')
 # Let chart plot the mean infection time
-#chart = ChartModule([{"Label": "Mean_infduration", "Color": "Black"}], data_collector_name='datacollector_meaninfectionduration')
+chart2 = ChartModule([{"Label": "Mean_inf_duration", "Color": "Black"}], data_collector_name='datacollector_meaninfectionduration')
 
 
 ''' Launch the server that will run and display the model '''
 server = ModularServer(SIRModel,
-                       [grid, chart],
+                       [grid, chart1, chart2],
                        "SIR-model",
-                       {"width": gridwidth, "height": gridheight})
+                       {"width": gridwidth, "height": gridheight, "infectivity": 2.0, "infection_duration": 5, "immunity_duration": 5, "mutation_probability": 0.1, "mutation_strength": 1})

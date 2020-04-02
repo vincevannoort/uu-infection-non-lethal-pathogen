@@ -70,6 +70,10 @@ class Cell(Agent):
         elif self.state == self.Infected:
             if self.time_counter > self.infection_duration:
                 self.set_state(self.Recovered)
+                
+            # Mutations
+            if random.random() < self.model.mutation_probability:
+                self.infection_duration = self.infection_duration + random.uniform(-self.model.mutation_strength, self.model.mutation_strength)
 
         # Recovered - Check if the immunity duration has been passed, aka: losing immunity after amount of time being recoverd
         elif self.state == self.Recovered:

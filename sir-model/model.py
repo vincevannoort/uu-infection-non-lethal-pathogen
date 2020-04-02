@@ -31,20 +31,24 @@ def fracI(model):
 
 # Computes the fraction of cells filled with an R individual
 def fracR(model):
-    nI = len([cell.state for cell in model.schedule.agents if cell.state == cell.Recovered])
-    if (nI == 0):
+    nR = len([cell.state for cell in model.schedule.agents if cell.state == cell.Recovered])
+    if (nR == 0):
         return 0
-    return nI / len(model.schedule.agents)
+    return nR / len(model.schedule.agents)
 
 class SIRModel(Model):
     '''Description of the model'''
     
-    def __init__(self, width, height, infection_duration = 10, immunity_duration = 15):
+    def __init__(self, width, height, infectivity=2.0, infection_duration = 10, immunity_duration = 15, mutation_probability=0, mutation_strength=10):
         # Set the model parameters
-        self.infectivity = 2.0       # Infection strength per infected individual
+        self.infectivity = infectivity       # Infection strength per infected individual
         self.infection_duration = infection_duration # Duration of infection
         self.immunity_duration = immunity_duration  # Duration of infection
         self.h_inf = 10              # Scaling of infectivity
+        
+        #mutations
+        self.mutation_probability = mutation_probability 
+        self.mutation_strength = mutation_strength
 
         percentage_starting_infected = 0.001
         percentage_starting_recovered = 0.01
