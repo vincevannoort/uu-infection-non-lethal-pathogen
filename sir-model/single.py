@@ -9,7 +9,7 @@ color_dict = {
 }
 
 duration = 2000
-model = SIRModel(150, 150, infectivity=0.1, infection_duration = 5, immunity_duration = 5, mutation_probability=0.01, mutation_strength=2)
+model = SIRModel(150, 150, infectivity=0.1, infection_duration = 20, immunity_duration = 20, mutation_probability=0.01, mutation_strength=2)
 
 for i in range(duration):
     model.step()
