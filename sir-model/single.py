@@ -17,7 +17,7 @@ color_dict_states = {
 
 # Configuration
 duration = 120
-visualise_each_x_timesteps = 50
+visualise_each_x_timesteps = -1
 grid_size = 150
 
 model = SIRModel(grid_size, grid_size, infectivity=4.2, infection_duration=70, immunity_duration=100,
