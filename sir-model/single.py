@@ -9,8 +9,14 @@ color_dict = {
     'Recovered': '#d6ff37'
 }
 
+color_dict_states = {
+    '1': '#eeeeee',
+    '2': '#ff5e5e',
+    '3': '#d6ff37'
+}
+
 # Configuration
-duration = 1000
+duration = 120
 visualise_each_x_timesteps = 50
 grid_size = 150
 
@@ -36,7 +42,8 @@ data_mid.plot()
 plt.savefig(f'figures/inf-dur-result.pdf')
 
 for index, grid in enumerate(model.grids_saved):
-    plt.figure(index + 100)
-    print(np.reshape(grid, (-1, grid_size)).shape)
-    plt.imshow(np.reshape(grid, (-1, grid_size)))
+    grid = np.reshape(grid, (-1, grid_size))
+    plt.figure()
+    plt.imshow(grid)
     plt.savefig(f'figures/grids/grid--{index}.pdf')
+    plt.close()
