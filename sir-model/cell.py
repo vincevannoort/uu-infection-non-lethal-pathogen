@@ -1,4 +1,5 @@
 import random
+import math
 from mesa import Agent
 
 class Cell(Agent):
@@ -44,16 +45,14 @@ class Cell(Agent):
             neighbours = self.model.grid.get_neighbors((self.x, self.y), moore=True, include_center=False)
 
             # Calculate total infection rating based on neighbours
-            total_infectivity = 0.0
+            # infection_probability = 0.0
+            neighbors_infected = 0
             for neighbour in neighbours:
                 if neighbour.state == self.Infected:
-                    total_infectivity += neighbour.infectivity
+                    # infection_probability += neighbour.infectivity
+                    neighbors_infected += 1
 
-
-            # Calculate the infection probability
-            infection_probability = 0.0
-            if total_infectivity > 0:
-                infection_probability = total_infectivity / (total_infectivity + self.model.h_inf)
+            infection_probability = 1 - (math.e ** (-neighbors_infected * self.infectivity))
 
             if random.random() < infection_probability:
                 self.set_state(self.Infected)

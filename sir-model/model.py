@@ -49,7 +49,6 @@ class SIRModel(Model):
         self.infectivity = infectivity       # Infection strength per infected individual
         self.infection_duration = infection_duration # Duration of infection
         self.immunity_duration = immunity_duration  # Duration of infection
-        self.h_inf = 10              # Scaling of infectivity
         
         #mutations
         self.mutation_probability = mutation_probability 
