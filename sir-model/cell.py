@@ -45,14 +45,12 @@ class Cell(Agent):
             neighbours = self.model.grid.get_neighbors((self.x, self.y), moore=True, include_center=False)
 
             # Calculate total infection rating based on neighbours
-            # infection_probability = 0.0
             neighbors_infected = 0
             for neighbour in neighbours:
                 if neighbour.state == self.Infected:
-                    # infection_probability += neighbour.infectivity
                     neighbors_infected += 1
 
-            infection_probability = 1 - (math.e ** (-neighbors_infected * self.infectivity))
+            infection_probability = 1 - (math.e ** (-neighbors_infected * self.infectivity * 0.01))
 
             if random.random() < infection_probability:
                 self.set_state(self.Infected)
