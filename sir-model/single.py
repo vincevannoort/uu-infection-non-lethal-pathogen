@@ -8,7 +8,7 @@ color_dict = {
     'Recovered': '#d6ff37'
 }
 
-duration = 5000
+duration = 2000
 model = SIRModel(100, 100, infectivity=2, infection_duration = 5, immunity_duration = 10, mutation_probability=0.1, mutation_strength=3)
 
 for i in range(duration):
