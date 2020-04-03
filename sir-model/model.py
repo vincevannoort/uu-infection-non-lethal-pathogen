@@ -44,7 +44,7 @@ def fracR(model):
 class SIRModel(Model):
     '''Description of the model'''
     
-    def __init__(self, width, height, infectivity=2.0, infection_duration = 10, immunity_duration = 15, mutation_probability=0, mutation_strength=10):
+    def __init__(self, width, height, infectivity=2.0, infection_duration = 10, immunity_duration = 15, mutation_probability=0, mutation_strength=10, visualise_each_x_timesteps=-1):
         # Set the model parameters
         self.infectivity = infectivity       # Infection strength per infected individual
         self.infection_duration = infection_duration # Duration of infection
@@ -58,6 +58,7 @@ class SIRModel(Model):
         percentage_starting_infected = 0.001
         percentage_starting_recovered = 0.01
        
+        self.visualise_each_x_timesteps = visualise_each_x_timesteps
         self.grid = SingleGrid(width, height, torus=True)
         self.schedule = SimultaneousActivation(self)
         for (contents, x, y) in self.grid.coord_iter():
@@ -85,11 +86,24 @@ class SIRModel(Model):
 
         # Add data collector, to plot the mean infection duration
         self.datacollector_meaninfectionduration = DataCollector(model_reporters={"Mean_inf_duration": compute_mean_infduration})
+
+        # collects grids per amount of time steps
+        self.grids_saved = []
         
         self.running = True
+
+    def get_grid_cells(self):
+        return np.array([cell.state for cell in self.schedule.agents])
 
     def step(self):
         self.datacollector_cells.collect(self)
         self.datacollector_meaninfectionduration.collect(self)
+
+        # collect grids for running without browser
+        if self.visualise_each_x_timesteps != -1:
+            if self.schedule.time % self.visualise_each_x_timesteps == 0:
+                print(f'timestep: {self.schedule.time}, saved grid.')
+                self.grids_saved.append(self.get_grid_cells())
+
         self.schedule.step()
     
