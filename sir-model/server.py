@@ -13,11 +13,11 @@ def portrayCell(cell):
                  "Layer": 1,
                  "Color": "white"} # Default colour, used for empty cells.
     if cell.state == cell.Susceptible:
-        portrayal["Color"] = "grey"
+        portrayal["Color"] = "#eeeeee"
     elif cell.state == cell.Infected:
-        portrayal["Color"] = "red"
+        portrayal["Color"] = "#ff5e5e"
     elif cell.state == cell.Recovered:
-        portrayal["Color"] = "blue"
+        portrayal["Color"] = "#d6ff37"
 
     return portrayal
 
@@ -30,9 +30,9 @@ gridheight = 150
 grid = CanvasGrid(portrayCell, gridwidth, gridheight, 5*gridwidth, 5*gridheight)
 # Make a chart for plotting the density of individuals
 chart1 = ChartModule([
-    {"Label": "Infected", "Color": "red"}, 
-    {"Label": "Recovered", "Color": "blue"}, 
-    {"Label": "Susceptible", "Color": "grey"}],
+    {"Label": "Infected", "Color": "#ff5e5e"},
+    {"Label": "Recovered", "Color": "#d6ff37"},
+    {"Label": "Susceptible", "Color": "#eeeeee"}],
     data_collector_name='datacollector_cells')
 # Let chart plot the mean infection time
 chart2 = ChartModule([{"Label": "Mean_inf_duration", "Color": "Black"}], data_collector_name='datacollector_meaninfectionduration')
@@ -42,4 +42,4 @@ chart2 = ChartModule([{"Label": "Mean_inf_duration", "Color": "Black"}], data_co
 server = ModularServer(SIRModel,
                        [grid, chart1, chart2],
                        "SIR-model",
-                       {"width": gridwidth, "height": gridheight, "infectivity": 4.2, "infection_duration": 70, "immunity_duration": 100, "mutation_probability": 0.01, "mutation_strength": 1})
+                       {"width": gridwidth, "height": gridheight, "infectivity": 4.2, "infection_duration": 70, "immunity_duration": 100, "mutation_probability": 0.01, "mutation_strength": 10})

@@ -96,14 +96,14 @@ class SIRModel(Model):
         return np.array([cell.state for cell in self.schedule.agents])
 
     def step(self):
-        self.datacollector_cells.collect(self)
-        self.datacollector_meaninfectionduration.collect(self)
-
         # collect grids for running without browser
         if self.visualise_each_x_timesteps != -1:
             if self.schedule.time % self.visualise_each_x_timesteps == 0:
                 print(f'timestep: {self.schedule.time}, saved grid.')
                 self.grids_saved.append(self.get_grid_cells())
+
+        self.datacollector_cells.collect(self)
+        self.datacollector_meaninfectionduration.collect(self)
 
         self.schedule.step()
     

@@ -40,7 +40,9 @@ class Cell(Agent):
         '''Compute the next state of a cell'''
         self.__next_step_cell__ = self
 
-        # Susceptibles
+        # 
+        # Susceptible
+        #
         if self.state == self.Susceptible:
             neighbours = self.model.grid.get_neighbors((self.x, self.y), moore=True, include_center=False)
 
@@ -63,7 +65,9 @@ class Cell(Agent):
                 self.__next_step_cell__.infectivity = inf_neighbour.infectivity
                 self.__next_step_cell__.infection_duration = inf_neighbour.infection_duration
 
+        #
         # Infected - Check if the infection duration has been passed, aka: recovering after amount of time being infected
+        #
         elif self.state == self.Infected:
             if self.time_counter > self.infection_duration:
                 self.set_state(self.Recovered)
@@ -71,9 +75,10 @@ class Cell(Agent):
             # Mutations
             if random.random() < self.model.mutation_probability:
                 self.__next_step_cell__.infection_duration = max(self.infection_duration + random.uniform(-self.model.mutation_strength, self.model.mutation_strength), 1)
-                
 
+        #
         # Recovered - Check if the immunity duration has been passed, aka: losing immunity after amount of time being recoverd
+        #
         elif self.state == self.Recovered:
             if self.time_counter > self.immunity_duration:
                 self.set_state(self.Susceptible)

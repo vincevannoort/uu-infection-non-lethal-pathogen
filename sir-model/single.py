@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 import itertools
 import numpy as np
+from matplotlib.backends.backend_pdf import PdfPages
 
 color_dict = {
     'Susceptible': '#eeeeee',
@@ -11,12 +12,19 @@ color_dict = {
 }
 
 # Configuration
-duration = 2000
-visualise_each_x_timesteps = 100
-grid_size = 200
+duration = 2500
+visualise_each_x_timesteps = 25
+grid_size = 150
 
-model = SIRModel(grid_size, grid_size, infectivity=4.2, infection_duration=70, immunity_duration=70,
-                 mutation_probability=0.1, mutation_strength=5, visualise_each_x_timesteps=visualise_each_x_timesteps)
+model = SIRModel(
+    width=grid_size, 
+    height=grid_size, 
+    infectivity=4.2, 
+    infection_duration=70, 
+    immunity_duration=80, 
+    mutation_probability=0.1, 
+    mutation_strength=5, 
+    visualise_each_x_timesteps=visualise_each_x_timesteps)
 
 for i in range(duration):
     model.step()
@@ -38,10 +46,15 @@ data_mid.plot()
 plt.savefig(f'figures/inf-dur-result.pdf')
 
 
+multipage = PdfPages(
+    f'figures/grid-{grid_size}-{duration}-{visualise_each_x_timesteps}.pdf')
 cmap = colors.ListedColormap(['#eeeeee', '#ff5e5e', '#d6ff37'])
 for index, grid in enumerate(model.grids_saved):
     grid = np.reshape(grid, (-1, grid_size))
     plt.figure()
-    plt.imshow(grid, cmap=cmap)
-    plt.savefig(f'figures/grids/grid--{index}.pdf')
+    plt.imshow(grid, cmap=cmap, interpolation='none')
+    plt.title(
+        f'inf dur: {model.infection_duration}, imm dur: {model.immunity_duration}, step: {index*visualise_each_x_timesteps}.')
+    multipage.savefig()
     plt.close()
+multipage.close()
