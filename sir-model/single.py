@@ -51,11 +51,10 @@ multipage = PdfPages(
 cmap = colors.ListedColormap(['#eeeeee', '#ff5e5e', '#d6ff37'])
 for index, grid in enumerate(model.grids_saved):
     grid = np.reshape(grid, (-1, grid_size))
-    print(grid)
-    # plt.figure()
-    # plt.imshow(grid, cmap=cmap, interpolation='none')
-    # plt.title(
-    #     f'inf dur: {model.infection_duration}, imm dur: {model.immunity_duration}, step: {index*visualise_each_x_timesteps}.')
-    # multipage.savefig()
-    # plt.close()
+    plt.figure()
+    plt.imshow(grid, cmap=cmap, interpolation='none')
+    plt.title(
+        f'inf dur: {model.infection_duration}, imm dur: {model.immunity_duration}, step: {index*visualise_each_x_timesteps}.')
+    multipage.savefig()
+    plt.close()
 multipage.close()
