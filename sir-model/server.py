@@ -42,4 +42,11 @@ chart2 = ChartModule([{"Label": "Mean_inf_duration", "Color": "Black"}], data_co
 server = ModularServer(SIRModel,
                        [grid, chart1, chart2],
                        "SIR-model",
-                       {"width": gridwidth, "height": gridheight, "infectivity": 4.2, "infection_duration": 70, "immunity_duration": 100, "mutation_probability": 0.01, "mutation_strength": 10})
+                       {
+                           "width": gridwidth, 
+                           "height": gridheight, 
+                           "infectivity": 4.2, 
+                           "infection_duration": 70, 
+                           "immunity_duration": 100, 
+                           "mutation_probability": 0.01, 
+                           "mutation_strength": 0.01})
