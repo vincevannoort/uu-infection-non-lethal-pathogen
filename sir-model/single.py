@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 import time
 import itertools
+import math
 import numpy as np
 from matplotlib.backends.backend_pdf import PdfPages
 
@@ -10,14 +11,14 @@ cmap = colors.ListedColormap(['#eeeeee', '#ff5e5e', '#d6ff37'])
 color_dict = { 'Susceptible': '#eeeeee', 'Infected': '#ff5e5e', 'Recovered': '#d6ff37' }
 
 # Configuration
-duration = 2500
+duration = 25 * 100
 visualise_each_x_timesteps = 25
 grid_size = 120
 
 model = SIRModel(
     width=grid_size,
     height=grid_size,
-    infectivity=1.25,
+    infectivity=1,
     infection_duration=70,
     immunity_duration=120,
     mutation_probability=0.1,
@@ -44,13 +45,25 @@ data_mid.plot()
 plt.savefig(f'figures/inf-dur-result.pdf')
 
 multipage = PdfPages(f'figures/grid-{grid_size}-{duration}-{visualise_each_x_timesteps}-{time.strftime("%Y%m%d-%H%M%S")}.pdf')
-for index, grid in enumerate(model.grids_saved):
-    grid = np.reshape(grid, (-1, grid_size))
-    plt.figure()
-    plt.imshow(grid, cmap=cmap, interpolation='none')
-    plt.title(f'infectivity: {model.infectivity}, inf dur: {model.infection_duration}, imm dur: {model.immunity_duration}, step: {index*visualise_each_x_timesteps}.')
+
+# print(math.ceil((duration / visualise_each_x_timesteps) / 25))
+# print(np.array_split(np.arange(35.0), 2))
+
+for index_grids, grids in enumerate(np.array_split(model.grids_saved, math.ceil((duration / visualise_each_x_timesteps) / 25))):
+    fig, axes = plt.subplots(nrows=5, ncols=5, figsize=(15, 15))
+    plt.subplots_adjust(wspace=0.3, hspace=0.3)
+
+    fig.suptitle(f'Infectivity: {model.infectivity} \nInfection duration: {model.infection_duration} \nImmunity duration: {model.immunity_duration}', fontsize=24)
+    for index_axes, ax in enumerate(axes.reshape(-1)):
+        try:
+            grid = grids[index_axes]
+            grid = np.reshape(grid, (-1, grid_size))
+            ax.set_title(f'iteration: {index_grids * 25 * visualise_each_x_timesteps + index_axes * 25}')
+            ax.imshow(grid, cmap=cmap, interpolation='none')
+        except IndexError:
+            break
+
     multipage.savefig()
-    plt.close()
 
 multipage.close()
 
