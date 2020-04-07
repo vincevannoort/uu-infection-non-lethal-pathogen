@@ -16,23 +16,18 @@ class Cell(Agent):
         super().__init__(pos,model)
         self.x,self.y = pos
         self.state = init_state
-        self.__next__state = None
+        self.__next__state = init_state
         self.time_counter = 0
-        self.__next__time_counter = None
 
         # infection
         self.infectivity = model.infectivity
-        self.__next__infectivity = None
+        self.__next__infectivity = model.infectivity
         self.infection_duration = model.infection_duration
-        self.__next__infection_duration = None
+        self.__next__infection_duration = model.infection_duration
 
         # immunity
         self.immunity_duration = model.immunity_duration
-        self.__next__immunity_duration = None
-
-        # # next step
-        # self.__next_step_cell__ = None;
-
+        self.__next__immunity_duration = model.immunity_duration
 
     def initialise_as_infected(self):
         self.state = self.Infected
@@ -92,11 +87,10 @@ class Cell(Agent):
 
     def set_state(self, state):
         self.__next__state = state
-        self.__next__time_counter = 0
+        self.time_counter = 0
 
     def advance(self): 
         self.state = self.__next__state
-        self.time_counter = self.__next__time_counter
         self.infectivity = self.__next__infectivity
         self.infection_duration = self.__next__infection_duration
         self.immunity_duration = self.__next__immunity_duration
