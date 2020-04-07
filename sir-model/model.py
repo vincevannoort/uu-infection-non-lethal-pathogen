@@ -55,8 +55,8 @@ class SIRModel(Model):
         self.mutation_strength = mutation_strength
         #self.mean_inf_duration_list = []
 
-        percentage_starting_infected = 0.2
-        percentage_starting_recovered = 0.2
+        percentage_starting_infected = 0.01
+        percentage_starting_recovered = 0.01
        
         self.visualise_each_x_timesteps = visualise_each_x_timesteps
         self.grid = SingleGrid(width, height, torus=False)

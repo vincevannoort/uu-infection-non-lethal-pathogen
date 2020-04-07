@@ -45,7 +45,7 @@ server = ModularServer(SIRModel,
                        {
                            "width": gridwidth, 
                            "height": gridheight, 
-                           "infectivity": 4.2, 
+                           "infectivity": 2, 
                            "infection_duration": 70, 
                            "immunity_duration": 100, 
                            "mutation_probability": 0.01, 

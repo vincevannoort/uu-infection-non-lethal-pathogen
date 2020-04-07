@@ -31,14 +31,17 @@ class Cell(Agent):
 
     def initialise_as_infected(self):
         self.state = self.Infected
+        self.__next__state = self.Infected
         self.time_counter = random.randint(0, self.infection_duration)
 
     def initialise_as_recovered(self):
         self.state = self.Recovered
+        self.__next__state = self.Recovered
         self.time_counter = random.randint(0, self.immunity_duration)
 
     def step(self):
         '''Compute the next state of a cell'''
+        
         # 
         # Susceptible
         #

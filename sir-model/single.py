@@ -1,29 +1,27 @@
 from model import SIRModel
 import matplotlib.pyplot as plt
 from matplotlib import colors
+import time
 import itertools
 import numpy as np
 from matplotlib.backends.backend_pdf import PdfPages
 
-color_dict = {
-    'Susceptible': '#eeeeee',
-    'Infected': '#ff5e5e',
-    'Recovered': '#d6ff37'
-}
+cmap = colors.ListedColormap(['#eeeeee', '#ff5e5e', '#d6ff37'])
+color_dict = { 'Susceptible': '#eeeeee', 'Infected': '#ff5e5e', 'Recovered': '#d6ff37' }
 
 # Configuration
-duration = 1000
+duration = 2500
 visualise_each_x_timesteps = 25
-grid_size = 150
+grid_size = 120
 
 model = SIRModel(
     width=grid_size,
     height=grid_size,
-    infectivity=4.2,
+    infectivity=1.25,
     infection_duration=70,
-    immunity_duration=100,
-    mutation_probability=0,
-    mutation_strength=1,
+    immunity_duration=120,
+    mutation_probability=0.1,
+    mutation_strength=0.1,
     visualise_each_x_timesteps=visualise_each_x_timesteps)
 
 for i in range(duration):
@@ -45,16 +43,14 @@ plt.savefig(
 data_mid.plot()
 plt.savefig(f'figures/inf-dur-result.pdf')
 
-
-multipage = PdfPages(
-    f'figures/grid-{grid_size}-{duration}-{visualise_each_x_timesteps}.pdf')
-cmap = colors.ListedColormap(['#eeeeee', '#ff5e5e', '#d6ff37'])
+multipage = PdfPages(f'figures/grid-{grid_size}-{duration}-{visualise_each_x_timesteps}-{time.strftime("%Y%m%d-%H%M%S")}.pdf')
 for index, grid in enumerate(model.grids_saved):
     grid = np.reshape(grid, (-1, grid_size))
     plt.figure()
     plt.imshow(grid, cmap=cmap, interpolation='none')
-    plt.title(
-        f'inf dur: {model.infection_duration}, imm dur: {model.immunity_duration}, step: {index*visualise_each_x_timesteps}.')
+    plt.title(f'infectivity: {model.infectivity}, inf dur: {model.infection_duration}, imm dur: {model.immunity_duration}, step: {index*visualise_each_x_timesteps}.')
     multipage.savefig()
     plt.close()
+
 multipage.close()
+
