@@ -1,6 +1,7 @@
 import random
 import math
 from mesa import Agent
+import copy
 
 class Cell(Agent):
     '''Description of the grid points of the CA'''
@@ -38,7 +39,7 @@ class Cell(Agent):
 
     def step(self):
         '''Compute the next state of a cell'''
-        self.__next_step_cell__ = self
+        self.__next_step_cell__ = copy.copy(self)
 
         # 
         # Susceptible
