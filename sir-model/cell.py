@@ -74,7 +74,10 @@ class Cell(Agent):
                 
             # Mutations
             if random.random() < self.model.mutation_probability:
-                self.__next_step_cell__.infection_duration = max(self.infection_duration + random.uniform(-self.model.mutation_strength, self.model.mutation_strength), 1)
+                self.__next_step_cell__.infection_duration = max(self.infection_duration + random.uniform(-self.model.mutation_strength, self.model.mutation_strength), 0)
+
+            if random.random() < self.model.mutation_probability:
+                self.__next_step_cell__.infectivity = max(self.infectivity + random.uniform(-0.01, 0.01), 0)
 
         #
         # Recovered - Check if the immunity duration has been passed, aka: losing immunity after amount of time being recoverd
