@@ -12,18 +12,18 @@ color_dict = {
 }
 
 # Configuration
-duration = 50000
-visualise_each_x_timesteps = 1000
+duration = 2000
+visualise_each_x_timesteps = 25
 grid_size = 150
 
 model = SIRModel(
-    width=grid_size, 
-    height=grid_size, 
-    infectivity=4.2, 
-    infection_duration=70, 
-    immunity_duration=100, 
-    mutation_probability=0.01, 
-    mutation_strength=1, 
+    width=grid_size,
+    height=grid_size,
+    infectivity=4.2,
+    infection_duration=40,
+    immunity_duration=100,
+    mutation_probability=0,
+    mutation_strength=1,
     visualise_each_x_timesteps=visualise_each_x_timesteps)
 
 for i in range(duration):
