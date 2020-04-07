@@ -16,17 +16,22 @@ class Cell(Agent):
         super().__init__(pos,model)
         self.x,self.y = pos
         self.state = init_state
+        self.__next__state = None
         self.time_counter = 0
+        self.__next__time_counter = None
 
         # infection
         self.infectivity = model.infectivity
+        self.__next__infectivity = None
         self.infection_duration = model.infection_duration
+        self.__next__infection_duration = None
 
         # immunity
         self.immunity_duration = model.immunity_duration
+        self.__next__immunity_duration = None
 
-        # next step
-        self.__next_step_cell__ = None;
+        # # next step
+        # self.__next_step_cell__ = None;
 
 
     def initialise_as_infected(self):
@@ -39,8 +44,6 @@ class Cell(Agent):
 
     def step(self):
         '''Compute the next state of a cell'''
-        self.__next_step_cell__ = copy.copy(self)
-
         # 
         # Susceptible
         #
@@ -63,8 +66,8 @@ class Cell(Agent):
 
                 # inherit infection from one of them
                 inf_neighbour = random.choice(inf_neighbours)
-                self.__next_step_cell__.infectivity = inf_neighbour.infectivity
-                self.__next_step_cell__.infection_duration = inf_neighbour.infection_duration
+                self.__next__infectivity = inf_neighbour.infectivity
+                self.__next__infection_duration = inf_neighbour.infection_duration
 
         #
         # Infected - Check if the infection duration has been passed, aka: recovering after amount of time being infected
@@ -75,10 +78,10 @@ class Cell(Agent):
                 
             # Mutations
             if random.random() < self.model.mutation_probability:
-                self.__next_step_cell__.infection_duration = max(self.infection_duration + random.uniform(-self.model.mutation_strength, self.model.mutation_strength), 0)
+                self.__next__infection_duration = max(self.infection_duration + random.uniform(-self.model.mutation_strength, self.model.mutation_strength), 0)
 
             if random.random() < self.model.mutation_probability:
-                self.__next_step_cell__.infectivity = max(self.infectivity + random.uniform(-0.01, 0.01), 0)
+                self.__next__infectivity = max(self.infectivity + random.uniform(-0.01, 0.01), 0)
 
         #
         # Recovered - Check if the immunity duration has been passed, aka: losing immunity after amount of time being recoverd
@@ -88,11 +91,15 @@ class Cell(Agent):
                 self.set_state(self.Susceptible)
 
     def set_state(self, state):
-        self.__next_step_cell__.state = state
-        self.__next_step_cell__.time_counter = 0 
+        self.__next__state = state
+        self.__next__time_counter = 0
 
     def advance(self): 
-        self = self.__next_step_cell__
+        self.state = self.__next__state
+        self.time_counter = self.__next__time_counter
+        self.infectivity = self.__next__infectivity
+        self.infection_duration = self.__next__infection_duration
+        self.immunity_duration = self.__next__immunity_duration
 
         # increase time counter for states that need a duration
         if self.state is self.Infected or self.state is self.Recovered:
