@@ -11,7 +11,7 @@ cmap = colors.ListedColormap(['#eeeeee', '#ff5e5e', '#d6ff37'])
 color_dict = { 'Susceptible': '#eeeeee', 'Infected': '#ff5e5e', 'Recovered': '#d6ff37' }
 
 # Configuration
-duration = 125 * 3000
+duration = 125 * 100
 visualise_each_x_timesteps = 125
 grid_size = 120
 
@@ -22,7 +22,7 @@ model = SIRModel(
     infection_duration=70,
     immunity_duration=130,
     mutation_probability=0.1,
-    mutation_strength=0.1,
+    mutation_strength= 1,
     visualise_each_x_timesteps=visualise_each_x_timesteps)
 
 for i in range(duration):
