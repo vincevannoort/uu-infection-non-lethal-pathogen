@@ -80,8 +80,8 @@ class SIRModel(Model):
         # Add data collector, to plot the number of individuals of different types
         self.datacollector_cells = DataCollector(model_reporters={
             "Infected": fracI,
-            "Recovered": fracR,
             "Susceptible": fracS,
+            "Recovered": fracR,
         })
 
         # Add data collector, to plot the mean infection duration
