@@ -1,5 +1,15 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
+import time
+
+# Colors
+color_dict = {
+    'Infected 1': '#ff5e5e',
+    'Infected 2': '#b03bc5',
+    'Susceptible': '#eeeeee',
+    'Recovered': '#ffeb3b'
+}
 
 # Parameters
 b = 1.0
@@ -48,15 +58,20 @@ for i in range(maxtime):
     Rt = Rt1
 
 # Plot
-plt.plot(times, S, 'black', label = "S", lw = 2.0)
-plt.plot(times, I1, 'red', label = "I$_1$", lw = 2.0)
-plt.plot(times, I2, 'green', label = "I$_2$", lw = 2.0)
-plt.plot(times, R, 'blue', label = "R", lw = 2.0)
-plt.title("Infection duration 1: " + str(Tinf1) + ", Infection duration 2: " + str(Tinf2))
-plt.legend(loc = "upper right")
-plt.xlabel("Time")
-plt.ylabel("Population fraction")
-plt.show()
+data = pd.DataFrame(data={ 'Infected 1': I1, 'Infected 2': I2, 'Susceptible': S, 'Recovered': R })
+color = [color_dict.get(x, '#333333') for x in data.columns]
+title =  f'Infection duration 1: {Tinf1}, Infection duration 2: {Tinf2}'
+data.plot.area(color=color, title=title, lw=3).legend(loc='upper right')
+plt.margins(0)
+plt.xlabel('Time')
+plt.ylabel('Population fraction')
+start_time = time.strftime("%Y%m%d-%H%M%S")
+plt.savefig(f'figures/Tinf1{Tinf1}-Tinf2{Tinf2}-Timm{Timm}.pdf')
+# plt.title("Infection duration 1: " + str(Tinf1) + ", Infection duration 2: " + str(Tinf2))
+# plt.legend(loc = "upper right")
+# plt.xlabel("Time")
+# plt.ylabel("Population fraction")
+# plt.show()
 
 St = 0.7
 It = 0.2
