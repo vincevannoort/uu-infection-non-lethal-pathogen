@@ -4,17 +4,17 @@ import matplotlib.pyplot as plt
 # Parameters
 b = 1.0
 h = 10.0
-Tinf1 = 5
-Tinf2 = 12
-Timm = 10
+Tinf1 = 70
+Tinf2 = 500
+Timm = 300
 
-maxtime = 80
+maxtime = 400
 
 # Parameter values
-St = 0.8
-I1t = 0.1
-I2t = 0.1
-Rt = 0.0
+St = 0.98
+I1t = 0.005
+I2t = 0.005
+Rt = 0.01
 
 # Arrays with time points and simulation outcomes
 times = np.arange(0,maxtime)
@@ -30,9 +30,16 @@ for i in range(maxtime):
     I2.append(I2t)
     R.append(Rt)
     # Calculate next step:
-    St1 = St - ((8*b*I1t)/(8*b*I1t+h))*St - ((8*b*I2t)/(8*b*I2t+h))*St + (1.0/Timm)*Rt
-    I1t1 = I1t + ((8*b*I1t)/(8*b*I1t+h))*St - (1.0/Tinf1)*I1t
-    I2t1 = I2t + ((8*b*I2t)/(8*b*I2t+h))*St - (1.0/Tinf2)*I2t
+    St1 = St - (1 - np.exp(-8*b*I1t*0.01))*St - (1 - np.exp(-8*b*I2t*0.01))*St + (1.0/Timm)*Rt
+    I1t1 = I1t + (1 - np.exp(-8*b*I1t*0.01))*St - (1.0/Tinf1)*I1t    
+    I2t1 = I2t + (1 - np.exp(-8*b*I2t*0.01))*St - (1.0/Tinf2)*I2t
+
+# =============================================================================
+#     St1 = St - ((8*b*I1t)/(8*b*I1t+h))*St - ((8*b*I2t)/(8*b*I2t+h))*St + (1.0/Timm)*Rt
+#     I1t1 = I1t + ((8*b*I1t)/(8*b*I1t+h))*St - (1.0/Tinf1)*I1t
+#     I2t1 = I2t + ((8*b*I2t)/(8*b*I2t+h))*St - (1.0/Tinf2)*I2t
+# =============================================================================
+    
     Rt1 = Rt + (1.0/Tinf1)*I1t + (1.0/Tinf2)*I2t - (1.0/Timm)*Rt
     # Set values to next step:
     St = St1
@@ -42,10 +49,27 @@ for i in range(maxtime):
 
 # Plot
 plt.plot(times, S, 'black', label = "S", lw = 2.0)
-plt.plot(times, I1, 'red', label = "I1", lw = 2.0)
-plt.plot(times, I2, 'green', label = "I2", lw = 2.0)
+plt.plot(times, I1, 'red', label = "I$_1$", lw = 2.0)
+plt.plot(times, I2, 'green', label = "I$_2$", lw = 2.0)
 plt.plot(times, R, 'blue', label = "R", lw = 2.0)
-plt.legend()
+plt.title("Infection duration 1: " + str(Tinf1) + ", Infection duration 2: " + str(Tinf2))
+plt.legend(loc = "upper right")
 plt.xlabel("Time")
 plt.ylabel("Population fraction")
 plt.show()
+
+St = 0.7
+It = 0.2
+
+Tinf = np.linspace(20,200,100)
+pcgr = ((1 - np.exp(-8*b*It*0.01))/It)*St - (1.0/Tinf)
+
+plt.plot(Tinf,pcgr, 'blue')
+plt.xlabel("Infection Duration")
+plt.ylabel("Growth Rate")
+plt.title("Per Capita Growth Rate vs Infection Duration")
+
+
+
+
+

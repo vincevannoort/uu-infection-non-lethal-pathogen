@@ -2,17 +2,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Parameters
-b = 2.0
-h = 10.0
-Tinf = 5
-Timm = 10
+b = 1.0
+Tinf = 200
+Timm = 600
 
-maxtime = 30
+# Scaling parameter
+# h = 10.0
+
+maxtime = 1000
 
 # Parameter values
-St = 0.8
-It = 0.2
-Rt = 0.0
+St = 0.98
+It = 0.01
+Rt = 0.01
 
 # Arrays with time points and simulation outcomes
 times = np.arange(0,maxtime)
@@ -26,9 +28,19 @@ for i in range(maxtime):
     I.append(It)
     R.append(Rt)
     # Calculate next step:
-    St1 = St - ((8*b*It)/(8*b*It+h))*St + (1.0/Timm)*Rt
-    It1 = It + ((8*b*It)/(8*b*It+h))*St - (1.0/Tinf)*It
+    
+    # Exponential definition of infection probability
+    St1 = St - (1 - np.exp(-8*b*It*0.01))*St + (1.0/Timm)*Rt
+    It1 = It + (1 - np.exp(-8*b*It*0.01))*St - (1.0/Tinf)*It
+    
+    # Scaling parameter definition of infection probability
+# =============================================================================
+#     St1 = St - ((8*b*It)/(8*b*It+h))*St + (1.0/Timm)*Rt
+#     It1 = It + ((8*b*It)/(8*b*It+h))*St - (1.0/Tinf)*It
+# =============================================================================
+    
     Rt1 = Rt + (1.0/Tinf)*It - (1.0/Timm)*Rt
+    
     # Set values to next step:
     St = St1
     It = It1
@@ -38,6 +50,7 @@ for i in range(maxtime):
 plt.plot(times, S, 'black', label = "S", lw = 2.0)
 plt.plot(times, I, 'red', label = "I", lw = 2.0)
 plt.plot(times, R, 'blue', label = "R", lw = 2.0)
+plt.title("Infection duration: " + str(Tinf) + ", Immunity duration: " + str(Timm))
 plt.legend()
 plt.xlabel("Time")
 plt.ylabel("Population fraction")
